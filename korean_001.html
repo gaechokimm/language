@@ -79,6 +79,7 @@
     .activity-card.blue  { border-color: #C5DEFF; background: linear-gradient(130deg,#fff 60%,#F0F6FF); }
     .activity-card.skyblue{ border-color: #B6EDF3; background: linear-gradient(130deg,#fff 60%,#F0FBFD); }
     .activity-card.records{ border-color: #FFE9B0; background: linear-gradient(130deg,#fff 60%,#FFFBEE); }
+    .activity-card.white  { border-color: #E4E4E4; background: linear-gradient(130deg,#fff 60%,#F9F9F9); }
 
     .act-icon { font-size: 34px; flex-shrink: 0; }
     .act-info { flex: 1; }
@@ -241,6 +242,7 @@
     .btn-submit.purple { background: var(--purple); color: white; }
     .btn-submit.blue   { background: var(--blue);   color: white; }
     .btn-submit.skyblue{ background: var(--skyblue);color: white; }
+    .btn-submit.gold   { background: #F0A030;      color: white; }
 
     .btn-new {
       width: 100%; padding: 12px; border: 2px dashed #E0E0E0;
@@ -368,6 +370,31 @@
     .api-hint { text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-light); }
     .api-hint a { color: var(--purple); text-decoration: none; }
 
+    /* ══════════════════════════════════
+       SIXW (육하원칙)
+    ══════════════════════════════════ */
+    .sixw-card {
+      background: white; border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 4px 0; margin-bottom: 18px; overflow: hidden;
+    }
+    .sixw-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 18px; border-bottom: 1px solid #F5F5F5;
+    }
+    .sixw-row:last-child { border-bottom: none; }
+    .sixw-lbl {
+      font-size: 14px; font-weight: 700; color: #999;
+      width: 42px; flex-shrink: 0; text-align: right;
+    }
+    .sixw-inp {
+      flex: 1; min-width: 0; border: none; border-bottom: 2px solid #F0F0F0;
+      outline: none; font-size: 15px; font-family: inherit;
+      background: transparent; padding: 4px 2px; color: var(--text);
+      transition: border-color .2s;
+    }
+    .sixw-inp:focus { border-bottom-color: #F0A030; }
+    .sixw-inp::placeholder { color: #D0D0D0; }
+
     /* Records small link */
     .records-link-area { padding: 8px 20px 0; text-align: center; }
     .records-link-btn {
@@ -435,6 +462,14 @@
       <div class="act-info">
         <div class="act-name">감정 바꿔 쓰기</div>
         <div class="act-desc">같은 사건, 다른 감정으로 바꿔봐요!</div>
+      </div>
+      <div class="act-arrow">›</div>
+    </div>
+    <div class="activity-card white" onclick="openActivity('sixw')">
+      <div class="act-icon">🤍</div>
+      <div class="act-info">
+        <div class="act-name">육하원칙으로 글쓰기</div>
+        <div class="act-desc">누가·언제·어디서·무엇을·왜·어떻게!</div>
       </div>
       <div class="act-arrow">›</div>
     </div>
@@ -621,6 +656,66 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════ SIXW ═══════════════════════════════ -->
+<div id="sixw" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="top-title">🤍 육하원칙으로 글쓰기</span>
+  </div>
+  <div class="act-content">
+    <div class="instr-box">
+      <div class="instr-title">📌 이렇게 해요!</div>
+      키워드를 보고, <strong>육하원칙에 맞춰</strong> 이야기를 만들어 보세요.<br>
+      예) <strong>도서관</strong> → 누가: 나와 친구가 / 언제: 토요일 오후에 / 어디서: 동네 도서관에서 / 무엇을: 책을 읽었다 / 왜: 숙제가 있어서 / 어떻게: 조용히 앉아서
+    </div>
+
+    <!-- Keyword card -->
+    <div class="word-card" style="padding: 28px 24px;">
+      <div id="sixw-spinner" class="loading show" style="padding:0"><div class="spinner"></div></div>
+      <div id="sixw-kw-view" style="display:none; width:100%; text-align:center; position:relative;">
+        <div style="font-size:11px; color:var(--text-light); font-weight:700; letter-spacing:.8px; margin-bottom:10px;">키워드</div>
+        <div id="sixw-keyword" style="font-size:38px; font-weight:900; color:var(--text);"></div>
+        <button class="word-refresh-btn" onclick="loadSixW()" title="새 키워드">🔄</button>
+      </div>
+    </div>
+
+    <!-- 6 inputs -->
+    <div id="sixw-body" style="display:none">
+      <div class="sixw-card">
+        <div class="sixw-row">
+          <div class="sixw-lbl">누가</div>
+          <input id="sixw-who"   class="sixw-inp" type="text" placeholder="예) 나와 친구가">
+        </div>
+        <div class="sixw-row">
+          <div class="sixw-lbl">언제</div>
+          <input id="sixw-when"  class="sixw-inp" type="text" placeholder="예) 토요일 오후에">
+        </div>
+        <div class="sixw-row">
+          <div class="sixw-lbl">어디서</div>
+          <input id="sixw-where" class="sixw-inp" type="text" placeholder="예) 도서관에서">
+        </div>
+        <div class="sixw-row">
+          <div class="sixw-lbl">무엇을</div>
+          <input id="sixw-what"  class="sixw-inp" type="text" placeholder="예) 책을 읽었다">
+        </div>
+        <div class="sixw-row">
+          <div class="sixw-lbl">왜</div>
+          <input id="sixw-why"   class="sixw-inp" type="text" placeholder="예) 숙제가 있어서">
+        </div>
+        <div class="sixw-row">
+          <div class="sixw-lbl">어떻게</div>
+          <input id="sixw-how"   class="sixw-inp" type="text" placeholder="예) 조용히 앉아서">
+        </div>
+      </div>
+      <div class="gap"></div>
+      <button id="sixw-btn" class="btn-submit gold" onclick="submitSixW()">완료 ✓</button>
+      <button class="btn-new" onclick="loadSixW()">🔄 새로운 키워드로 다시 해볼래요</button>
+      <div id="sixw-fb-loading" class="loading"><div class="spinner"></div><br>클로드가 읽고 있어요…</div>
+      <div id="sixw-fb" class="feedback"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════ RECORDS ═══════════════════════════════ -->
 <div id="records" class="screen">
   <div class="top-bar">
@@ -669,7 +764,8 @@ const S = {
   wordMode: 'random',  // 'random' | 'custom'
   conjs: [],           // current 3 conjunctions
   chainW1: null,       // first chain word
-  emo: null            // {emotion, event_sentence, emotion_sentence}
+  emo: null,           // {emotion, event_sentence, emotion_sentence}
+  sixwKeyword: null    // current keyword for 육하원칙
 };
 
 // ─────────────────────────────────────────
@@ -689,6 +785,7 @@ function openActivity(type) {
   else if (type === 'conjunction') loadConj();
   else if (type === 'chain')  loadChain();
   else if (type === 'emotion') loadEmo();
+  else if (type === 'sixw')   loadSixW();
 }
 function openRecords() { renderRecords(); showScreen('records'); }
 
@@ -748,8 +845,8 @@ function saveRec(rec) {
   S.records.push(rec);
   localStorage.setItem('knp_rec', JSON.stringify(S.records));
 }
-const HEARTS = ['🩷','💜','💙','🩵'];
-const TYPE_NAMES = ['두글자 단어','접속사','끝말잇기','감정 바꿔쓰기'];
+const HEARTS = ['🩷','💜','💙','🩵','🤍'];
+const TYPE_NAMES = ['단어 문장','접속사','끝말잇기','감정 바꿔쓰기','육하원칙'];
 
 function fmtDate(ts) {
   const d = new Date(ts);
@@ -1218,6 +1315,91 @@ async function submitEmo() {
   } catch(e) { alert('피드백 오류: ' + e.message); }
   btn.disabled = false;
   setLoading('emo-fb-loading', false);
+}
+
+// ─────────────────────────────────────────
+// ⑤ SIXW ACTIVITY (육하원칙)
+// ─────────────────────────────────────────
+async function loadSixW() {
+  document.getElementById('sixw-spinner').classList.add('show');
+  document.getElementById('sixw-kw-view').style.display = 'none';
+  ['who','when','where','what','why','how'].forEach(k =>
+    document.getElementById('sixw-' + k).value = ''
+  );
+  resetFb('sixw-fb');
+
+  try {
+    const raw = await claude(
+      '국어 학습 앱입니다. 초등학생이 이야기를 만들기 좋은 친숙한 한국어 명사 단어 1개를 알려주세요. 단어만 답해주세요. 예: 도서관, 운동회, 소풍, 생일파티, 시장, 캠핑, 방과후',
+      30
+    );
+    const kw = raw.replace(/[^가-힣\s]/g, '').trim();
+    S.sixwKeyword = kw;
+    document.getElementById('sixw-keyword').textContent = kw;
+    document.getElementById('sixw-kw-view').style.display = 'block';
+    document.getElementById('sixw-body').style.display = 'block';
+  } catch(e) { alert('키워드를 가져오지 못했어요.\n' + e.message); }
+  document.getElementById('sixw-spinner').classList.remove('show');
+}
+
+async function submitSixW() {
+  const fields = {
+    who:   document.getElementById('sixw-who').value.trim(),
+    when:  document.getElementById('sixw-when').value.trim(),
+    where: document.getElementById('sixw-where').value.trim(),
+    what:  document.getElementById('sixw-what').value.trim(),
+    why:   document.getElementById('sixw-why').value.trim(),
+    how:   document.getElementById('sixw-how').value.trim()
+  };
+  if (Object.values(fields).some(v => !v)) {
+    alert('육하원칙 6칸을 모두 채워주세요!'); return;
+  }
+  const btn = document.getElementById('sixw-btn');
+  btn.disabled = true;
+  setLoading('sixw-fb-loading', true);
+  resetFb('sixw-fb');
+
+  try {
+    const raw = await claude(
+      `초등학교 선생님처럼 친절하게 피드백해주세요.
+키워드: "${S.sixwKeyword}"
+학생이 쓴 육하원칙:
+- 누가: ${fields.who}
+- 언제: ${fields.when}
+- 어디서: ${fields.where}
+- 무엇을: ${fields.what}
+- 왜: ${fields.why}
+- 어떻게: ${fields.how}
+
+아래 JSON으로만 답해주세요:
+{"praise":"칭찬 1~2문장(다정하게, 잘 쓴 항목 언급)","correction":"더 자연스럽거나 풍부하게 쓸 수 있는 예시(없으면 null)","tip":"짧은 팁, 없으면 null"}`
+    );
+    const p = parseJ(raw);
+    if (p) {
+      const summary = `누가: ${fields.who} / 언제: ${fields.when} / 어디서: ${fields.where} / 무엇을: ${fields.what} / 왜: ${fields.why} / 어떻게: ${fields.how}`;
+      const fb = document.getElementById('sixw-fb');
+      let html = `<div class="fb-user" style="background:#F9F9F9; font-size:13px; line-height:1.9;">`;
+      html += `<b style="color:#999; font-size:11px;">키워드: ${escHtml(S.sixwKeyword)}</b><br>`;
+      [['누가',fields.who],['언제',fields.when],['어디서',fields.where],['무엇을',fields.what],['왜',fields.why],['어떻게',fields.how]]
+        .forEach(([lbl,val]) => { html += `<b style="color:#bbb">${lbl}</b> ${escHtml(val)}<br>`; });
+      html += `</div>`;
+      html += `<div class="fb-praise">${p.praise}</div>`;
+      if (p.correction) {
+        html += `<div class="fb-correction"><div class="fb-corr-title">✨ 이렇게 써보면 어떨까요?</div>${escHtml(p.correction)}</div>`;
+      }
+      if (p.tip) html += `<div class="fb-tip">💡 ${escHtml(p.tip)}</div>`;
+      fb.innerHTML = html;
+      fb.classList.add('show');
+      saveRec({
+        id: Date.now(), type: 5,
+        prompt: S.sixwKeyword,
+        userInput: summary,
+        correction: p.correction || null
+      });
+    }
+  } catch(e) { alert('피드백 오류: ' + e.message); }
+  btn.disabled = false;
+  setLoading('sixw-fb-loading', false);
 }
 
 // ─────────────────────────────────────────
